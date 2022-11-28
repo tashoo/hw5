@@ -27,20 +27,31 @@ head(homocides)
 
 ```{r}
 sd <- homocides %>%
-  filter(city == "San Diego")
+  filter(city == "San Diego") %>%
+  filter(!is.na(lat))
 head(sd)
 
 ```
 First make a map of San Diego!
 ```{r}
-sd_counties <- county_subdivisions(state = "CA", county= "San Diego", cb = TRUE)
+sd_mapping <- county_subdivisions(state = "CA", county= "San Diego", cb = TRUE)
+slice(sd_mapping, 1:3)
 
+```
+
+
+```{r}
+# convert lat long to sf
+sd <- st_as_sf(sd, coords = c("lon", "lat")) %>% 
+  st_set_crs(4269)
 
 ```
 
 ```{r}
+
 ggplot() + 
-  geom_sf(data = sd_counties, color = "light grey") +
+  geom_sf(data = sd_mapping, color = "light grey") +
+  geom_sf(data = sd, aes(fill = "disposition")) +
   theme_dark()
 
 
