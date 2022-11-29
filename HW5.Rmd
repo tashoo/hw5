@@ -24,38 +24,48 @@ homocides <- read.csv("data/homicide-data.csv")
 head(homocides)
 
 ```
-
+Get san diego homocides
 ```{r}
 sd <- homocides %>%
   filter(city == "San Diego") %>%
   filter(!is.na(lat)) %>%
-  mutate(disposition = as_factor(disposition))
+  mutate(case_status = case_when(
+    disposition %in% c("Open/No arrest","Closed without arrest") ~"Unsolved",
+    disposition == "Closed by arrest" ~ "Solved"))
 head(sd)
 
 ```
-First make a map of San Diego!
+Get san diego subdivisions.
 ```{r}
 sd_mapping <- county_subdivisions(state = "CA", county= "San Diego", cb = TRUE)
 slice(sd_mapping, 1:3)
 
 ```
 
-
+Convert lat long to sf
 ```{r}
-# convert lat long to sf
+
 sd <- st_as_sf(sd, coords = c("lon", "lat")) %>% 
   st_set_crs(4269)
 
 ```
 
+Plot San Diego
 ```{r}
 
 ggplot() + 
   geom_sf(data = sd_mapping, color = "light grey") +
-  geom_sf(data = sd, aes(color = disposition)) +
+  geom_sf(data = sd, aes(color = case_status), alpha = 0.5) +
   theme_dark()
 
+```
 
+```{r}
+ggplot() + 
+  geom_sf(data = sd_mapping, color = "light grey") +
+  geom_sf(data = sd, aes(color = case_status), alpha = 0.5) +
+  facet_wrap(~ case_status, ncol = 2) +
+  theme_dark()
 
 ```
 
