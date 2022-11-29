@@ -28,7 +28,8 @@ head(homocides)
 ```{r}
 sd <- homocides %>%
   filter(city == "San Diego") %>%
-  filter(!is.na(lat))
+  filter(!is.na(lat)) %>%
+  mutate(disposition = as_factor(disposition))
 head(sd)
 
 ```
@@ -51,8 +52,9 @@ sd <- st_as_sf(sd, coords = c("lon", "lat")) %>%
 
 ggplot() + 
   geom_sf(data = sd_mapping, color = "light grey") +
-  geom_sf(data = sd, aes(fill = "disposition")) +
+  geom_sf(data = sd, aes(color = disposition)) +
   theme_dark()
+
 
 
 ```
