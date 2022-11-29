@@ -12,8 +12,6 @@ Pick one city in the data. Create a map showing the locations of the homicides i
 library(tidyverse)
 library(tigris)
 library(sf)
-library(viridis)
-library(maps)
 library(forcats)
 
 ```
@@ -31,7 +29,9 @@ sd <- homocides %>%
   filter(!is.na(lat)) %>%
   mutate(case_status = case_when(
     disposition %in% c("Open/No arrest","Closed without arrest") ~"Unsolved",
-    disposition == "Closed by arrest" ~ "Solved"))
+    disposition == "Closed by arrest" ~ "Solved")) %>%
+  mutate(lump_race = fct_lump_n(victim_race, 3))
+
 head(sd)
 
 ```
@@ -63,7 +63,7 @@ ggplot() +
 ```{r}
 ggplot() + 
   geom_sf(data = sd_mapping, color = "light grey") +
-  geom_sf(data = sd, aes(color = case_status), alpha = 0.5) +
+  geom_sf(data = sd, aes(color = lump_race), alpha = 0.5) +
   facet_wrap(~ case_status, ncol = 2) +
   theme_dark()
 
