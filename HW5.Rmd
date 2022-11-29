@@ -64,7 +64,7 @@ ggplot() +
   facet_wrap(~ case_status, ncol = 2) +
   theme_dark() +
   theme(legend.position="bottom") +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=6)) +
   labs(color='Victim Race', title= "# of Solved vs Unsolved Homocides", subtitle = "City of San Diego") 
 
 ```
